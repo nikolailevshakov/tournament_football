@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope&display=swap" rel="stylesheet">
+    <title>Турнир прогнозистов</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{ url_for('index') }}">Главная</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('season') }}">Сезон</a>
+                </li>
+                <li>
+                    <a href=#><span>Результаты</span></a>
+                </li>
+            </ul>
+        </nav>
+        <div class='login_mark'>
+        </div>
+    </header>
+
+    <section class="results">
+        <div class="table">
+                <h3>Сезон</h3>
+                <table>
+                    <tr class = 'head_table'>
+                        <td></td>
+                        <td>Неделя</td>
+                        <td>Месяц</td>
+                        <td>Сезон</td>
+                    </tr>
+                    <tr class='first'>
+                        <td class = 'name'>Левшаков</td>
+                        <td class = 'season_result'>0</td>
+                        <td>1</td>
+                        <td class = 'week_result'>0</td>
+                    </tr>
+                    <tr class='second'>
+                        <td class = 'name'>Титов</td>
+                        <td class = 'season_result'>3</td>
+                        <td>4</td>
+                        <td class = 'week_result'>0</td>
+                    </tr>
+                    <tr class='third'>
+                        <td class = 'name'>Пасюк</td>
+                        <td class = 'season_result'>6</td>
+                        <td>8</td>
+                        <td class = 'week_result'>0</td>
+                    </tr>
+                    <tr class='fourth'>
+                        <td class = 'name'>Рыкованов</td>
+                        <td class = 'season_result'>9</td>
+                        <td>8</td>
+                        <td class = 'week_result'>0</td>
+                    </tr>
+                </table>
+            </div>
+    </section>
+
+    <footer>
+        <div class="up_footer">
+            <div class="name">Турнир Прогнозистов</div>
+            <ul>
+                <li>
+                    <a href="{{ url_for('index') }}">Главная</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('season') }}">Сезон</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('results') }}">Результаты</a>
+                </li>
+            </ul>
+            <a href="https://vk.com/turnirprognoz2019" target= '_blank'>
+                <img src="{{ url_for('static', filename='img_assets/vk.svg') }}" alt="ВК">
+            </a>
+        </div>
+        <span></span>
+        <div class="down_footer">
+            <div class="tribbute">
+                Photo by Timothy Tan on Unsplash
+            </div>
+            <div class="rights">
+                Все права защищены, 2020
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
