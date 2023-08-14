@@ -1,79 +1,101 @@
 import psycopg2
-
-conn = psycopg2.connect(
-   database="postgres", user='postgres', password='admin', host='127.0.0.1', port='5432'
-)
-conn.autocommit = True
-cursor = conn.cursor()
+import queries
 
 
-def get_users():
-    conn = psycopg2.connect(
-        database="tournament", user='postgres', password='admin', host='127.0.0.1', port='5432'
+def connect_database(database: str):
+    connection = psycopg2.connect(
+        database=database, user='postgres', password='admin', host='127.0.0.1', port='5432'
     )
-    conn.autocommit = True
-    cursor = conn.cursor()
-    GET_USERS = "SELECT username from users;"
-    cursor.execute(GET_USERS)
+    connection.autocommit = True
+    return connection
+
+
+def disconnect_database(connection) -> None:
+    connection.close()
+
+
+def get_users() -> list:
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    cursor.execute(queries.GET_USERS)
     res = cursor.fetchall()
     usernames = [item[0] for item in res]
-    conn.close()
+    disconnect_database(connection)
     return usernames
 
 
-def insert_user(username, secret):
-    conn = psycopg2.connect(
-        database="tournament", user='postgres', password='admin', host='127.0.0.1', port='5432'
-    )
-    conn.autocommit = True
-    cursor = conn.cursor()
-    INSERT_USER = "INSERT INTO users (username, secret) VALUES ('{username}', '{secret}');"\
-        .format(username=username, secret=secret)
-    cursor.execute(INSERT_USER)
-    conn.close()
+def insert_user(username: str, secret: str):
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    cursor.execute(queries.INSERT_USER.format(username=username, secret=secret))
+    disconnect_database(connection)
 
 
-try:
-    cursor.execute("CREATE DATABASE tournament")
-    print("INFO: Database tournament is created")
-except psycopg2.errors.DuplicateDatabase as e:
-    print(e.pgerror)
-
-conn.close()
-
-conn = psycopg2.connect(
-   database="tournament", user='postgres', password='admin', host='127.0.0.1', port='5432'
-)
-conn.autocommit = True
-cursor = conn.cursor()
-
-CREATE_USERS_TABLE = "CREATE TABLE users (id SERIAL PRIMARY KEY, " \
-                     "username VARCHAR(255), secret VARCHAR(255), created_at TIMESTAMP)"
-CREATE_SEASON_TABLE = "CREATE TABLE season (id SERIAL PRIMARY KEY, " \
-                      "week INT, user_id INT, CONSTRAINT FK_users_id FOREIGN KEY (user_id) REFERENCES users(id), " \
-                      "points INT, created_at TIMESTAMP)"
-CREATE_WEEK_TABLE = "CREATE TABLE current_week (id SERIAL PRIMARY KEY, " \
-                    "prediction VARCHAR(255), user_id INT, " \
-                    "CONSTRAINT FK_users_id FOREIGN KEY (user_id) REFERENCES users(id), " \
-                    "results VARCHAR(255), created_at TIMESTAMP)"
-
-try:
-    cursor.execute(CREATE_USERS_TABLE)
-    print("INFO: Table users is created")
-except psycopg2.errors.DuplicateTable as e:
-    print(e.pgerror)
-
-try:
-    cursor.execute(CREATE_SEASON_TABLE)
-    print("INFO: Table season is created")
-except psycopg2.errors.DuplicateTable as e:
-    print(e.pgerror)
-
-try:
-    cursor.execute(CREATE_WEEK_TABLE)
-    print("INFO: Table week is created")
-except psycopg2.errors.DuplicateTable as e:
-    print(e.pgerror)
+def number_users() -> int:
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    cursor.execute(queries.NUMBER_USERS)
+    num_users = cursor.fetchall()[0]
+    disconnect_database(connection)
+    return int(num_users[0])
 
 
-conn.close()
+def get_userid(secret) -> (str, str):
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    cursor.execute(queries.GET_USERNAME_USERID.format(secret=secret))
+    res = cursor.fetchall()
+    # ДОБАВИТЬ ОБРАБОТКУ ОШИБКИ С НЕВЕРНЫМ СЕКРЕТНЫМ СЛОВОМ
+    username, user_id = res[0][0], res[0][1]
+    disconnect_database(connection)
+    return username, user_id
+
+
+def insert_prediction(prediction, user_id) -> None:
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    cursor.execute(queries.INSERT_PREDICTION.format(prediction=prediction, user_id=user_id))
+    disconnect_database(connection)
+
+
+def create_database() -> None:
+    connection = connect_database("postgres")
+    cursor = connection.cursor()
+    try:
+        cursor.execute(queries.CREATE_DATABASE)
+        print("INFO: Database tournament is created")
+    except psycopg2.errors.DuplicateDatabase as e:
+        print(e.pgerror)
+    disconnect_database(connection)
+
+
+def create_tables() -> None:
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    try:
+        cursor.execute(queries.CREATE_USERS_TABLE)
+        print("INFO: Table users is created")
+    except psycopg2.errors.DuplicateTable as e:
+        print(e.pgerror)
+
+    try:
+        cursor.execute(queries.CREATE_SEASON_TABLE)
+        print("INFO: Table season is created")
+    except psycopg2.errors.DuplicateTable as e:
+        print(e.pgerror)
+
+    try:
+        cursor.execute(queries.CREATE_WEEK_TABLE)
+        print("INFO: Table week is created")
+    except psycopg2.errors.DuplicateTable as e:
+        print(e.pgerror)
+
+    disconnect_database(connection)
+
+
+def delete_tables() -> None:
+    connection = connect_database("tournament")
+    cursor = connection.cursor()
+    cursor.execute(queries.DROP_DATABASE)
+
+    disconnect_database(connection)

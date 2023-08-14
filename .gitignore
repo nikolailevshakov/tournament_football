@@ -18,3 +18,11 @@ build/
 docs/_build/
 .vscode
 token
+key.*
+
+.terraform.lock.hcl
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
