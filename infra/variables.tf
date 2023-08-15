@@ -20,7 +20,7 @@ variable "subnet_cidr_block" {
 variable "my_ip" {
   description = "My ip address"
   type = string
-  default = "87.116.163.37"
+  default = "87.116.162.65"
 }
 
 variable "ami" {
@@ -28,7 +28,7 @@ variable "ami" {
   type = map
   default = {
     "us-east-1" = "ami-053b0d53c279acc90"
-    "eu-central-1" = "ami-0fa03365cde71e0ab"
+    "eu-central-1" = "ami-04e601abe3e1a910f"
     "us-west-1" = "ami-0f8e81a3da6e2510a"
   }
 }

@@ -1,8 +1,10 @@
 import requests
 import telebot
 import sql
+import os
 
-TOKEN = open("token").read()
+#TOKEN = open("token").read()
+TOKEN = os.environ["TOKEN"]
 bot = telebot.TeleBot(TOKEN)
 
 
