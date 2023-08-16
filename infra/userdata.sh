@@ -24,11 +24,10 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 
 git clone https://github.com/nikolailevshakov/tournament_football.git /home/ubuntu/tournament_football
 mkdir /home/ubuntu/db-data
-apt install postgresql -y
 docker build -t bot /home/ubuntu/tournament_football/bot
-#docker run --name bot -p 80:5000 -e TOKEN=TOKEN -d bot
+#docker run --name bot -p 80:80 -e TOKEN=TOKEN -d bot
 docker pull postgres
-docker run --name postgres -e POSTGRES_PASSWORD=password \
+docker run --name postgres -e POSTGRES_PASSWORD=admin \
   -v /home/ubuntu/db-data:/var/lib/postgresql/data \
   -p 5432:5432 \
   -d postgres
