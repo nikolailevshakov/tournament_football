@@ -4,7 +4,7 @@ import queries
 
 def connect_database(database: str):
     connection = psycopg2.connect(
-        database=database, user='postgres', password='admin', host='127.0.0.1', port='5432'
+        database=database, user='postgres', password='admin', host='host.docker.internal', port='5432'
     )
     connection.autocommit = True
     return connection
