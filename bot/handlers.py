@@ -3,7 +3,7 @@ import telebot
 import sql
 import os
 
-#TOKEN = open("token").read()
+# TOKEN = open("token").read()
 TOKEN = os.environ["TOKEN"]
 bot = telebot.TeleBot(TOKEN)
 
@@ -25,7 +25,8 @@ def help(message):
     HELP_TEXT = "С первого раза не запомнил. Есть следующие команды: \n" \
            "/хочумем - получить рандомный мем с реддита\n" \
            "/регистрация - зарегистрироваться в турнире\n" \
-           "/помоги - еще раз посмотреть все возможные команды"
+           "/помоги - еще раз посмотреть все возможные команды\n" \
+                "/прогноз - оставить прогноз на матчи"
     bot.send_message(message.chat.id, HELP_TEXT, parse_mode="Markdown")
 
 
@@ -58,7 +59,7 @@ def user_handler(message: str):
                 message.chat.id, 'Такой юзернейм уже занят! Хреновая у вас фантазия. Выбирай другой!',
                 parse_mode="Markdown")
             bot.register_next_step_handler(sent_again, user_handler)
-        elif sql.number_users() > 4:
+        elif sql.number_users() > 5:
             ERROR_TEXT = 'Все свои уже зарегались. Ты кто такой, парниша?'
             bot.send_message(message.chat.id, ERROR_TEXT, parse_mode="Markdown")
         else:
