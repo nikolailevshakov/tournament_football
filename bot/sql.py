@@ -1,10 +1,11 @@
 import psycopg2
 import queries
+import envs
 
 
 def connect_database(database: str):
     connection = psycopg2.connect(
-        database=database, user='postgres', password='admin', host='localhost', port='5432'
+        database=database, user=envs.POSTGRES_USER, password=envs.POSTGRES_PASSWORD, host=envs.DATABASE_HOST, port=envs.DATABASE_PORT
     )
     connection.autocommit = True
     return connection
@@ -15,7 +16,7 @@ def disconnect_database(connection) -> None:
 
 
 def get_users() -> list:
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     cursor.execute(queries.GET_USERS)
     res = cursor.fetchall()
@@ -25,14 +26,14 @@ def get_users() -> list:
 
 
 def insert_user(username: str, secret: str):
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     cursor.execute(queries.INSERT_USER.format(username=username, secret=secret))
     disconnect_database(connection)
 
 
 def number_users() -> int:
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     cursor.execute(queries.NUMBER_USERS)
     num_users = cursor.fetchall()[0]
@@ -41,7 +42,7 @@ def number_users() -> int:
 
 
 def get_userid(secret) -> (str, str):
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     cursor.execute(queries.GET_USERNAME_USERID.format(secret=secret))
     res = cursor.fetchall()
@@ -51,14 +52,14 @@ def get_userid(secret) -> (str, str):
 
 
 def insert_prediction(prediction, user_id) -> None:
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     cursor.execute(queries.INSERT_PREDICTION.format(prediction=prediction, user_id=user_id))
     disconnect_database(connection)
 
 
 def create_database() -> None:
-    connection = connect_database("postgres")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     try:
         cursor.execute(queries.CREATE_DATABASE)
@@ -69,7 +70,7 @@ def create_database() -> None:
 
 
 def create_tables() -> None:
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     try:
         cursor.execute(queries.CREATE_USERS_TABLE)
@@ -93,7 +94,7 @@ def create_tables() -> None:
 
 
 def delete_tables() -> None:
-    connection = connect_database("tournament")
+    connection = connect_database(envs.DATABASE)
     cursor = connection.cursor()
     cursor.execute(queries.DROP_DATABASE)
 

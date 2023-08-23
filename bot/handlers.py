@@ -1,11 +1,11 @@
 import requests
 import telebot
-import sql, texts
-import os
+import sql
+import texts
+import envs
 
-TOKEN = open("token").read()
-#TOKEN = os.environ["TOKEN"]
-bot = telebot.TeleBot(TOKEN)
+# TOKEN = open("token").read()
+bot = telebot.TeleBot(envs.TOKEN)
 
 
 @bot.message_handler(commands=['пинг'])
