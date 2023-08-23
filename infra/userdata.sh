@@ -24,3 +24,5 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 
 git clone https://github.com/nikolailevshakov/tournament_football.git /home/ubuntu/tournament_football
 mkdir /home/ubuntu/db-data
+#cd /home/ubuntu/tournament_football/bot
+#docker compose up -d

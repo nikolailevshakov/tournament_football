@@ -51,6 +51,14 @@ def prediction(message):
         bot.reply_to(message, "Ошибочка, сорян")
 
 
+@bot.message_handler()
+def ping(message):
+    try:
+        bot.reply_to(message, "Не понимаю тебя, используй команды из /помоги")
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
+
+
 def user_handler(message: str):
     res = message.text.split()
     if len(res) != 2:
