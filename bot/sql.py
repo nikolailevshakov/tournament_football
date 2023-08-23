@@ -4,7 +4,7 @@ import queries
 
 def connect_database(database: str):
     connection = psycopg2.connect(
-        database=database, user='postgres', password='admin', host='127.0.0.1', port='5432'
+        database=database, user='postgres', password='admin', host='localhost', port='5432'
     )
     connection.autocommit = True
     return connection
@@ -45,7 +45,6 @@ def get_userid(secret) -> (str, str):
     cursor = connection.cursor()
     cursor.execute(queries.GET_USERNAME_USERID.format(secret=secret))
     res = cursor.fetchall()
-    # ДОБАВИТЬ ОБРАБОТКУ ОШИБКИ С НЕВЕРНЫМ СЕКРЕТНЫМ СЛОВОМ
     username, user_id = res[0][0], res[0][1]
     disconnect_database(connection)
     return username, user_id

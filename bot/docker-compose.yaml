@@ -4,6 +4,13 @@ services:
     build: .
     ports:
       - "80:80"
+    environment:
+      - "TOKEN=${TOKEN}"
+      - "DATABASE_HOST=postgres"
+      - "DATABASE_PORT=5432"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=admin"
+      - "DATABASE=tournament"
     depends_on:
       - database
   database:
@@ -15,3 +22,4 @@ services:
       - "5432:5432"
     volumes:
       - /home/ubuntu/db-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql

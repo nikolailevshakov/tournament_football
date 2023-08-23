@@ -14,3 +14,8 @@ INSERT_USER = "INSERT INTO users (username, secret) VALUES ('{username}', '{secr
 NUMBER_USERS = "SELECT COUNT(*) FROM users"
 INSERT_PREDICTION = "INSERT INTO current_week (prediction, user_id) VALUES ('{prediction}', '{user_id}')"
 GET_USERNAME_USERID = "SELECT username, id FROM users WHERE secret='{secret}'"
+GET_PREDICTION_USERNAME = "SELECT users.username, prediction FROM current_week " \
+                          "INNER JOIN users ON users.id = current_week.user_id"
+CLEAR_WEEK_TABLE = "DELETE FROM current_week"
+
+ADD_POINTS = "INSERT INTO season (week, user_id, points) VALUES (1, '{user_id}', '{points}');"

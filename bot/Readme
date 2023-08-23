@@ -1,3 +1,3 @@
 create a dump - pg_dump postgres://postgres:admin@localhost:5432/tournament D:\dev\tournament_football\bot
 restore database - cat your_dump.sql | docker exec -i your-db-container psql -U postgres
-run app -  docker-compose up -e TOKEN=TOKEN -d
+run app -  docker compose up -d

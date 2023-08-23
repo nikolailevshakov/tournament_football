@@ -1,48 +1,54 @@
 import requests
 import telebot
-import sql
+import sql, texts
 import os
 
-# TOKEN = open("token").read()
-TOKEN = os.environ["TOKEN"]
+TOKEN = open("token").read()
+#TOKEN = os.environ["TOKEN"]
 bot = telebot.TeleBot(TOKEN)
 
 
 @bot.message_handler(commands=['пинг'])
 def ping(message):
-    bot.reply_to(message, "pong")
+    try:
+        bot.reply_to(message, "pong")
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
 
 
 @bot.message_handler(commands=['хочумем'])
 def get_meme(message):
-    res = requests.get(" https://meme-api.com/gimme").json()
-    meme = res['url']
-    bot.reply_to(message, meme)
+    try:
+        res = requests.get(" https://meme-api.com/gimme").json()
+        meme = res['url']
+        bot.reply_to(message, meme)
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
 
 
 @bot.message_handler(commands=['помоги'])
 def help(message):
-    HELP_TEXT = "С первого раза не запомнил. Есть следующие команды: \n" \
-           "/хочумем - получить рандомный мем с реддита\n" \
-           "/регистрация - зарегистрироваться в турнире\n" \
-           "/помоги - еще раз посмотреть все возможные команды\n" \
-                "/прогноз - оставить прогноз на матчи"
-    bot.send_message(message.chat.id, HELP_TEXT, parse_mode="Markdown")
-
+    try:
+        bot.send_message(message.chat.id, texts.HELP, parse_mode="Markdown")
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
 
 @bot.message_handler(commands=['регистрация'])
 def register(message):
-    WELCOME_TEXT = "Привет! Введи через пробел свой юзернэйм и секретную фразу, которую будешь использовать при отправке прогноза в будующем! не используй " \
-           "существующий пароль! Иначе создатель бота взломает все твои аккаунты"
-    sent_username = bot.send_message(message.chat.id, WELCOME_TEXT, parse_mode="Markdown")
-    bot.register_next_step_handler(sent_username, user_handler)
+    try:
+        sent_username = bot.send_message(message.chat.id, texts.WELCOME, parse_mode="Markdown")
+        bot.register_next_step_handler(sent_username, user_handler)
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
 
 
 @bot.message_handler(commands=['прогноз'])
 def prediction(message):
-    TEXT = "Оставь свой прогноз на следующий тур в следующем формате: СЕКРЕТ, 12 49 27 64 19 23 21 87 62 42"
-    send_prediction = bot.send_message(message.chat.id, TEXT)
-    bot.register_next_step_handler(send_prediction, prediction_handler, parse_mode="Markdown")
+    try:
+        send_prediction = bot.send_message(message.chat.id, texts.PREDICTION)
+        bot.register_next_step_handler(send_prediction, prediction_handler)
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
 
 
 def user_handler(message: str):
@@ -72,18 +78,24 @@ def user_handler(message: str):
 def prediction_handler(message: str):
     res = message.text.split(',')
     if len(res) != 2:
-        sent_again = bot.send_message(
-            message.chat.id, 'Ну все же, блять, написано. Пишем через ЗАПЯТУЮ!', parse_mode="Markdown")
-        bot.register_next_step_handler(sent_again, prediction_handler)
+        bot.send_message(
+            message.chat.id, 'Ну все же, блять, написано. Пишем через ЗАПЯТУЮ! Заново - /прогноз', parse_mode="Markdown")
+        return
     secret = res[0]
     prediction = res[1].split()
     if len(prediction) != 10:
-        sent_again = bot.send_message(
-            message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь? Давай заново.', parse_mode="Markdown")
-        bot.register_next_step_handler(sent_again, prediction_handler)
+        bot.send_message(
+            message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь? Давай заново - /прогноз',  parse_mode="Markdown")
+        return
     else:
-        username, user_id = sql.get_userid(secret)
-        sql.insert_prediction(prediction, user_id)
+        try:
+            username, user_id = sql.get_userid(secret)
+        except IndexError as e:
+            bot.send_message(
+                message.chat.id, 'Секрет свой забыл? Ну ты блять и гений. Админу пиши. Или начинай сначала - /прогноз.',
+                parse_mode="Markdown")
+            return
+        sql.insert_prediction(" ".join(prediction), user_id)
 
         text = "{username}, твой прогноз принят.".format(username=username)
-        bot.send_message(message.chat.id, text, parse_mode="Markdown")
+        bot.send_message(message.chat.id, text)
