@@ -13,6 +13,7 @@ services:
       - "DATABASE=tournament"
     depends_on:
       - database
+    container_name: bot
   database:
     image: postgres
     environment:
@@ -23,3 +24,4 @@ services:
     volumes:
       - /home/ubuntu/db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    container_name: postgres
