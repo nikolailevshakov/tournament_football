@@ -54,7 +54,7 @@ def prediction(message):
 @bot.message_handler()
 def ping(message):
     try:
-        bot.reply_to(message, "Не понимаю тебя, используй команды из /помоги")
+        bot.reply_to(message, "Не понимаю тебя, используй команды из /помоги, если забыл команды.")
     except Exception as e:
         bot.reply_to(message, "Ошибочка, сорян")
 
