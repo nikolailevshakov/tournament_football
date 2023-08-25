@@ -10,6 +10,8 @@ stages:
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   image: docker:latest
+  services:
+    - name: docker:dind
   script:
     - cd ./bot
     - docker build -t bot .
