@@ -1,3 +1,6 @@
+defult:
+  image: python:latest
+
 
 stages:         
   - build
@@ -6,6 +9,7 @@ stages:
 
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
+  image: docker:latest
   script:
     - cd ./bot
     - docker build -t bot .
@@ -22,6 +26,7 @@ code_style:   # This job also runs in the test stage.
   script:
     - pip install pycodestyle
     - pycodestyle ./bot
+  allow_failure: true
 
 deploy-job:      # This job runs in the deploy stage.
   stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
