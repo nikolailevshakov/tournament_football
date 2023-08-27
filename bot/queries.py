@@ -19,3 +19,6 @@ GET_PREDICTION_USERNAME = "SELECT users.username, prediction FROM current_week "
 CLEAR_WEEK_TABLE = "DELETE FROM current_week"
 
 ADD_POINTS = "INSERT INTO season (week, user_id, points) VALUES (1, '{user_id}', '{points}');"
+
+GET_PREDICTIONS = "SELECT current_week.prediction, users.username FROM current_week " \
+                  "INNER JOIN users on users.id = current_week.user_id"

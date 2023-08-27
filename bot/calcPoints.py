@@ -1,3 +1,4 @@
+import codecs
 
 
 def calc_points(game_preds: list[str], results: list[str]) -> int:
@@ -15,3 +16,18 @@ def calc_points(game_preds: list[str], results: list[str]) -> int:
         else:
             continue
     return points
+
+
+def read_result():
+    file = open("files/results.txt", "r")
+    return file.readline().strip('\n')
+
+
+def output_results():
+    results = [game_result for game_result in read_result().split()]
+    file = codecs.open("files/predictions.txt", "r", "utf-8-sig")
+    lines = file.readlines()
+    for line in lines:
+        prediction, username = line.split(",")[0], line.split(",")[1]
+        points = calc_points([game_prediction for game_prediction in prediction.split()], results)
+        print("User {username}, points {points}\n".format(username=username, points=points))
