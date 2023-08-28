@@ -3,6 +3,7 @@ import telebot
 import sql
 import texts
 import envs
+import utils
 
 # TOKEN = open("token").read()
 bot = telebot.TeleBot(envs.TOKEN)
@@ -33,6 +34,7 @@ def help(message):
     except Exception as e:
         bot.reply_to(message, "Ошибочка, сорян")
 
+
 @bot.message_handler(commands=['регистрация'])
 def register(message):
     try:
@@ -44,8 +46,10 @@ def register(message):
 
 @bot.message_handler(commands=['прогноз'])
 def prediction(message):
+    games = utils.read_games()
     try:
-        send_prediction = bot.send_message(message.chat.id, texts.PREDICTION)
+        bot.send_message(message.chat.id, texts.PREDICTION)
+        send_prediction = bot.send_message(message.chat.id, games)
         bot.register_next_step_handler(send_prediction, prediction_handler)
     except Exception as e:
         bot.reply_to(message, "Ошибочка, сорян")

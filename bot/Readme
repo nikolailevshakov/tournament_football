@@ -1,3 +1,4 @@
 create a dump - pg_dump postgres://postgres:admin@localhost:5432/tournament D:\dev\tournament_football\bot
 restore database - cat your_dump.sql | docker exec -i your-db-container psql -U postgres
 run app -  docker compose up -d
+run python jobs.py with results of the games in the file files/results.txt - to see points in the console
