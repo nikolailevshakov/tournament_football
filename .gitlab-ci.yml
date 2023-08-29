@@ -39,7 +39,7 @@ build-job:
     - cd ./bot
     - docker build -t $LOCAL_IMAGE .
     - docker tag $LOCAL_IMAGE:latest $CI_REGISTRY_USER/$DOCKER_HUB_TAG
-    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE:latest
 
 
 deploy-job:      # This job runs in the deploy stage.
