@@ -5,6 +5,8 @@ variables:
   DOCKER_HUB_TAG: tournament
   LOCAL_IMAGE: bot
   DOCKER_DRIVER: overlay2
+  LINUX_USER: ubuntu
+
 
 stages:         
   - test
@@ -42,9 +44,13 @@ build-job:
     - docker push $CI_REGISTRY_IMAGE:latest
 
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+deploy-job:      
+  stage: deploy 
   environment: production
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - echo "Deploy to production"
+    - ssh -i $SSH_KEY $LINUX_USER@$SERVER_IP
+    - ls
+    - export TOKEN=$TOKEN
+    - docker pull $CI_REGISTRY_IMAGE:latest
+    - docker compose up -d --no-deps server
