@@ -49,8 +49,6 @@ deploy-job:
   environment: production
   script:
     - echo "Deploy to production"
-    - ssh -i $SSH_KEY $LINUX_USER@$SERVER_IP
-    - ls
-    - export TOKEN=$TOKEN
-    - docker pull $CI_REGISTRY_IMAGE:latest
-    - docker compose up -d --no-deps server
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TOKEN"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker pull $CI_REGISTRY_IMAGE:latest"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker compose up -d --no-deps server"
