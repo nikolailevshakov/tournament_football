@@ -66,7 +66,7 @@ deploy:
     - echo "Deploy to production"
     - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TELEGRAM_TOKEN"
     - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker pull $CI_REGISTRY_IMAGE:latest"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose stop server"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose up -d --no-deps server"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "cd $PWD/tournament_football/bot && sudo docker compose pull"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "cd $PWD/tournament_football/bot && sudo docker compose up -d"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
