@@ -23,12 +23,11 @@ unit_tests:
     - pytest   
 
 code_style:   
-  stage: test    
+  stage: test
   before_script:
-    - cd bot
+    - pip install pycodestyle    
   script:
-    - pip install pycodestyle
-    - pycodestyle
+    - pycodestyle ./bot
   allow_failure: true
 
 build:
@@ -45,16 +44,24 @@ build:
 
 container_scanning:
   stage: scanning
-  image: docker
+  image: docker:latest
+  services:
+  - name: docker:dind
   before_script:
     - docker pull aquasec/trivy
   script:
     - docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $CI_REGISTRY_IMAGE:latest
-  allow_failure: true
 
 deploy:
+  image: alpine:latest
   stage: deploy 
   environment: production
+  before_script:
+    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - chmod 400 "$SSH_KEY"
+    - ssh-add "$SSH_PRIVATE_KEY"
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   script:
     - echo "Deploy to production"
     - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TELEGRAM_TOKEN"
