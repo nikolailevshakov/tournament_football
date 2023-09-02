@@ -2,18 +2,19 @@ default:
   image: python:latest
 
 variables:
-  DOCKER_HUB_USERNAME: levshakovn
   DOCKER_HUB_TAG: tournament
   LOCAL_IMAGE: bot
-  DOCKER_REGISTRY: hub.docker.com
-  DOCKER_REGISTRY_USER: levshakovn
+  DOCKER_DRIVER: overlay2
+  LINUX_USER: ubuntu
+
 
 stages:         
   - test
   - build
+  - scanning
   - deploy
 
-unit-test-job:   
+unit_tests:   
   stage: test
   before_script:
     - cd bot
@@ -30,23 +31,32 @@ code_style:
     - pycodestyle
   allow_failure: true
 
-build-job:
+build:
   stage: build
   image: docker:latest
   before_script:
-    - docker login $DOCKER_REGISTRY --username $DOCKER_REGISTRY_USER --password-stdin
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   services:
     - name: docker:dind
   script:
     - cd ./bot
-    - docker build -t $LOCAL_IMAGE .
-    - docker tag $LOCAL_IMAGE:latest $DOCKER_HUB_USERNAME:$DOCKER_HUB_TAG
-    - docker push $DOCKER_HUB_USERNAME:$DOCKER_HUB_TAG
+    - docker build -t $CI_REGISTRY_USER/$DOCKER_HUB_TAG .
+    - docker push $CI_REGISTRY_IMAGE:latest
 
+container_scanning:
+  stage: scanning
+  image: docker
+  before_script:
+    - docker pull aquasec/trivy
+  script:
+    - docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $CI_REGISTRY_IMAGE:latest
+  allow_failure: true
 
-deploy-job:      # This job runs in the deploy stage.
-  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+deploy:
+  stage: deploy 
   environment: production
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - echo "Deploy to production"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TELEGRAM_TOKEN"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker pull $CI_REGISTRY_IMAGE:latest"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker compose up -d --no-deps server"
