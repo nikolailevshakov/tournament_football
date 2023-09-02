@@ -11,9 +11,10 @@ variables:
 stages:         
   - test
   - build
+  - scanning
   - deploy
 
-unit-test-job:   
+unit_tests:   
   stage: test
   before_script:
     - cd bot
@@ -30,7 +31,7 @@ code_style:
     - pycodestyle
   allow_failure: true
 
-build-job:
+build:
   stage: build
   image: docker:latest
   before_script:
@@ -39,16 +40,23 @@ build-job:
     - name: docker:dind
   script:
     - cd ./bot
-    - docker build -t $LOCAL_IMAGE .
-    - docker tag $LOCAL_IMAGE:latest $CI_REGISTRY_USER/$DOCKER_HUB_TAG
+    - docker build -t $CI_REGISTRY_USER/$DOCKER_HUB_TAG .
     - docker push $CI_REGISTRY_IMAGE:latest
 
+container_scanning:
+  stage: scanning
+  image: docker
+  before_script:
+    - docker pull aquasec/trivy
+  script:
+    - docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image $CI_REGISTRY_IMAGE:latest
+  allow_failure: true
 
-deploy-job:      
+deploy:
   stage: deploy 
   environment: production
   script:
     - echo "Deploy to production"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TOKEN"
+    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TELEGRAM_TOKEN"
     - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker pull $CI_REGISTRY_IMAGE:latest"
     - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker compose up -d --no-deps server"
