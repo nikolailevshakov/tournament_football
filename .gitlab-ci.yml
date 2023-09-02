@@ -57,16 +57,17 @@ deploy:
   stage: deploy 
   environment: production
   before_script:
-    - 'command -v ssh-agent >/dev/null || ( apk upgrade && apk add openssh-client )'
+    - apk upgrade && apk add openssh-client
     - eval $(ssh-agent -s)
     - chmod 400 "$SSH_KEY"
     - ssh-add "$SSH_KEY"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   script:
     - echo "Deploy to production"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TELEGRAM_TOKEN"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker pull $CI_REGISTRY_IMAGE:latest"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f $PWD/tournament_football/bot/docker-compose.yaml pull"
-    - ssh -i $SSH_KEY -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f $PWD/tournament_football/bot/docker-compose.yaml up -d"
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "export TOKEN=$TELEGRAM_TOKEN"
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker pull $CI_REGISTRY_IMAGE:latest"
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "touch gitlab.txt"
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f $PWD/tournament_football/bot/docker-compose.yaml pull"
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f $PWD/tournament_football/bot/docker-compose.yaml up -d"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
