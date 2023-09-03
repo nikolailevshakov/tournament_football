@@ -5,24 +5,30 @@ services:
     ports:
       - "80:80"
     environment:
-      - "TOKEN=${TOKEN}"
-      - "DATABASE_HOST=postgres"
-      - "DATABASE_PORT=5432"
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=admin"
-      - "DATABASE=tournament"
+      TOKEN: /run/secrets/telegram_token
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      DATABASE: tournament
+    secrets:
+      - telegram_token
     depends_on:
       - database
     container_name: bot
   database:
     image: postgres
     environment:
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=admin"
-      - "POSTGRES_DB=tournament"
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: tournament
     ports:
       - "5432:5432"
     volumes:
       - /home/ubuntu/db-data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     container_name: postgres
+
+secrets:
+  telegram_token:
+    file: token.txt
