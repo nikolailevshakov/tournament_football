@@ -8,7 +8,11 @@ db = envs.DATABASE
 
 def connect_database(database: str):
     connection = psycopg2.connect(
-       database=database, user=envs.POSTGRES_USER, password=envs.POSTGRES_PASSWORD, host=envs.DATABASE_HOST, port=envs.DATABASE_PORT
+        database=database,
+        user=envs.POSTGRES_USER,
+        password=envs.POSTGRES_PASSWORD,
+        host=envs.DATABASE_HOST,
+        port=envs.DATABASE_PORT
     )
     connection.autocommit = True
     return connection
