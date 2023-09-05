@@ -5,7 +5,7 @@ services:
     ports:
       - "80:80"
     environment:
-      TOKEN: ${TELEGRAM_TOKEN}
+      TELEGRAM_TOKEN: ${TELEGRAM_TOKEN}
       DATABASE_HOST: postgres
       DATABASE_PORT: 5432
       POSTGRES_USER: postgres

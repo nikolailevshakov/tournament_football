@@ -6,7 +6,7 @@ import utils
 import envs
 
 bot = telebot.TeleBot(envs.TOKEN)
-print(envs.TOKEN)
+
 
 @bot.message_handler(commands=['пинг'])
 def ping(message):
