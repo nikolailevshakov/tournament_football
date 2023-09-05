@@ -2,10 +2,9 @@ import requests
 import telebot
 import sql
 import texts
-import envs
 import utils
+import envs
 
-# TOKEN = open("token").read()
 bot = telebot.TeleBot(envs.TOKEN)
 
 
@@ -59,8 +58,17 @@ def prediction(message):
         bot.reply_to(message, "Ошибочка, сорян")
 
 
+@bot.message_handler(commands=['результаты'])
+def results(message):
+    try:
+        results = bot.send_message(message.chat.id, texts.RESULTS)
+        sql.insert_prediction(results, 999)
+    except Exception as e:
+        bot.reply_to(message, "Ошибочка, сорян")
+
+
 @bot.message_handler()
-def ping(message):
+def default(message):
     try:
         bot.reply_to(message,
                      "Не понимаю тебя, используй команды из /помоги, если забыл команды.")

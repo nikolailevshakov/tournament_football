@@ -27,3 +27,6 @@ ADD_POINTS = "INSERT INTO season (week, user_id, points) VALUES (1, '{user_id}',
 
 GET_PREDICTIONS = "SELECT current_week.prediction, users.username FROM current_week " \
                   "INNER JOIN users on users.id = current_week.user_id"
+
+GET_RESULTS = "SELECT current_week.prediction FROM current_week" \
+              "WHERE current_week.user_id=999"

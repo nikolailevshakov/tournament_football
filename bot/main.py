@@ -1,5 +1,4 @@
 from handlers import bot
-import sql
 
 
 if __name__ == '__main__':

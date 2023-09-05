@@ -2,14 +2,13 @@ import psycopg2
 import queries
 import envs
 
-# db = "tournament"
+
 db = envs.DATABASE
 
 
 def connect_database(database: str):
     connection = psycopg2.connect(
        database=database, user=envs.POSTGRES_USER, password=envs.POSTGRES_PASSWORD, host=envs.DATABASE_HOST, port=envs.DATABASE_PORT
-        # database=database, user="postgres", password="admin", host="localhost", port="5432"
     )
     connection.autocommit = True
     return connection
@@ -65,10 +64,19 @@ def insert_prediction(prediction, user_id, database=db) -> None:
 def get_predictions(database=db):
     connection = connect_database(database)
     cursor = connection.cursor()
-    cursor.execute(queries.GET_PREDICTIONS.format())
+    cursor.execute(queries.GET_PREDICTIONS)
     res = cursor.fetchall()
     disconnect_database(connection)
     return res
+
+
+def get_results(database=db):
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.GET_RESULTS)
+    res = cursor.fetchall()
+    disconnect_database(connection)
+    return res[0][0]
 
 
 def create_database(database=db) -> None:
