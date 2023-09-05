@@ -11,7 +11,7 @@ bot = telebot.TeleBot(envs.TOKEN)
 @bot.message_handler(commands=['пинг'])
 def ping(message):
     try:
-        bot.reply_to(message, "pong")
+        bot.reply_to(message, "Чего блять надо?")
     except Exception as e:
         bot.reply_to(message, "Ошибочка, сорян")
 
@@ -49,6 +49,7 @@ def register(message):
 
 @bot.message_handler(commands=['прогноз'])
 def prediction(message):
+    print('from_user_id: {id}, username: {username}'.format(id=message.from_user.id, username=message.from_user.username))
     games = utils.read_games()
     try:
         bot.send_message(message.chat.id, texts.PREDICTION)
@@ -60,9 +61,10 @@ def prediction(message):
 
 @bot.message_handler(commands=['результаты'])
 def results(message):
+    games = utils.read_games()
     try:
-        results = bot.send_message(message.chat.id, texts.RESULTS)
-        sql.insert_prediction(results, 999)
+        send_results = bot.send_message(message.chat.id, texts.RESULTS + games)
+        bot.register_next_step_handler(send_results, results_handler)
     except Exception as e:
         bot.reply_to(message, "Ошибочка, сорян")
 
@@ -75,6 +77,11 @@ def default(message):
     except Exception as e:
         bot.reply_to(message,
                      "Ошибочка, сорян")
+
+
+def results_handler(message: str):
+    sql.insert_prediction(message.text, "7")
+    bot.send_message(message.chat.id, "Готово!")
 
 
 def user_handler(message: str):
@@ -108,6 +115,7 @@ def user_handler(message: str):
 
 def prediction_handler(message: str):
     res = message.text.split(',')
+    print('id={id}, from_user_id: {from_user_id}, username: {username}'.format(id=message.id, from_user_id=message.from_user.id, username=message.from_user.username))
     if len(res) != 2:
         bot.send_message(
             message.chat.id, 'Ну все же, блять, написано.'

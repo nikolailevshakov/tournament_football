@@ -30,3 +30,4 @@ GET_PREDICTIONS = "SELECT current_week.prediction, users.username FROM current_w
 
 GET_RESULTS = "SELECT current_week.prediction FROM current_week" \
               "WHERE current_week.user_id=999"
+

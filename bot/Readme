@@ -1,4 +1,10 @@
 create a dump - pg_dump postgres://postgres:admin@localhost:5432/tournament D:\dev\tournament_football\bot
 restore database - cat your_dump.sql | docker exec -i your-db-container psql -U postgres
 run app -  docker compose up -d
-run python jobs.py with results of the games in the file files/results.txt - to see points in the console
+Schedule:
+- Tuesday at 23.00 - run clear_current_week.py
+- By 18.00 Wednesday add new games at file/games.txt file (MANUAL)
+- By 22.00 Wednesday send new games post post_games.py
+- Friday at 23.00 - notify if someone forgot to send prediction
+- Monday By 20.00 - add games results with /результаты command (MANUAL)
+- Monday at 21.00 - post results

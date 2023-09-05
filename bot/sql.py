@@ -114,7 +114,6 @@ def create_tables(database=db) -> None:
         print("INFO: Table week is created")
     except psycopg2.errors.DuplicateTable as e:
         print(e.pgerror)
-
     disconnect_database(connection)
 
 
@@ -122,5 +121,11 @@ def delete_tables(database=db) -> None:
     connection = connect_database(database)
     cursor = connection.cursor()
     cursor.execute(queries.DROP_DATABASE)
+    disconnect_database(connection)
 
+
+def clear_current_week(database=db) -> None:
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.CLEAR_WEEK_TABLE)
     disconnect_database(connection)
