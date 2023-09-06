@@ -102,7 +102,8 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     username character varying(255),
     secret character varying(255),
-    created_at timestamp without time zone
+    created_at timestamp without time zone,
+    telegram_user_id character varying(255)
 );
 
 
@@ -156,11 +157,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 --
 
 COPY public.current_week (id, prediction, user_id, results, created_at) FROM stdin;
-1	11 21 11 32 21 10 01 20 01 02	4	\N	\N
-2	22 11 12 32 31 12 12 20 12 22	2	\N	\N
-3	11 10 21 00 31 21 02 30 12 11	6	\N	\N
-4	21 11 12 31 20 21 20 20 12 13	3	\N	\N
-5	12 11 12 20 31 22 02 20 01 13	5	\N	\N
 \.
 
 
@@ -169,11 +165,11 @@ COPY public.current_week (id, prediction, user_id, results, created_at) FROM std
 --
 
 COPY public.season (id, week, user_id, points, created_at) FROM stdin;
-1	1	5	9	\N
-2	1	6	7	\N
-3	1	3	14	\N
-4	1	2	13	\N
-5	1	4	8	\N
+4	1	2	30	\N
+3	1	3	29	\N
+1	1	5	24	\N
+5	1	4	23	\N
+2	1	6	20	\N
 \.
 
 
@@ -181,12 +177,13 @@ COPY public.season (id, week, user_id, points, created_at) FROM stdin;
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.users (id, username, secret, created_at) FROM stdin;
-2	Max1mKu	ОУСБГ	\N
-3	Чебурашка	хочудойки	\N
-4	kolyandos	password	\N
-5	ААА	ЖС	\N
-6	TiT11rus	megdubulok	\N
+COPY public.users (id, username, secret, created_at, telegram_user_id) FROM stdin;
+7	results	secret	\N	\N
+2	Max1mKu	ОУСБГ	\N	451170390
+3	Чебурашка	хочудойки	\N	683204699
+4	kolyandos	password	\N	212288934
+6	TiT11rus	megdubulok	\N	5016952492
+5	ААА	ЖС	\N	475304200
 \.
 
 
@@ -194,7 +191,7 @@ COPY public.users (id, username, secret, created_at) FROM stdin;
 -- Name: current_week_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.current_week_id_seq', 5, true);
+SELECT pg_catalog.setval('public.current_week_id_seq', 8, true);
 
 
 --
@@ -208,7 +205,7 @@ SELECT pg_catalog.setval('public.season_id_seq', 5, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 6, true);
+SELECT pg_catalog.setval('public.users_id_seq', 8, true);
 
 
 --

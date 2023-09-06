@@ -1,4 +1,4 @@
-create a dump - pg_dump postgres://postgres:admin@localhost:5432/tournament D:\dev\tournament_football\bot
+create a dump - pg_dump postgres://postgres:admin@localhost:5432/tournament
 restore database - cat your_dump.sql | docker exec -i your-db-container psql -U postgres
 
 Schedule:
