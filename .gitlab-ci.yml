@@ -13,6 +13,15 @@ stages:
   - build
   - scanning
   - deploy
+  - notify
+
+.notify_success: &notify_success
+  - curl -s --max-time 10 -d "chat_id=$CHAT_ID&disable_web_page_preview=1&text=success message ✅"
+    https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage > /dev/nul
+
+.notify_error: &notify_error
+  - curl -s --max-time 10 -d "chat_id=$CHAT_ID&disable_web_page_preview=1&text=fail message ❌"
+    https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage > /dev/nul
 
 unit_tests:   
   stage: test
@@ -68,5 +77,13 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "echo TELEGRAM_TOKEN=${TELEGRAM_TOKEN} > bot/bot/.env"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml pull"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml up -d server"
+  after_script:
+    - *notify_success
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+notify_error:
+  stage: notify
+  script:
+    - *notify_error
+  when: on_failure
