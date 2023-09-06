@@ -4,6 +4,7 @@ import sql
 import texts
 import utils
 import envs
+import scripts.notify_error as scripts
 
 bot = telebot.TeleBot(envs.TOKEN)
 
@@ -14,6 +15,7 @@ def ping(message):
     try:
         bot.reply_to(message, "Чего блять надо?")
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -21,9 +23,10 @@ def ping(message):
 def get_meme(message):
     try:
         res = requests.get(" https://meme-api.com/gimme").json()
-        meme = res['url']
+        meme = res['ur']
         bot.reply_to(message, meme)
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -33,6 +36,7 @@ def help(message):
         bot.send_message(message.chat.id, texts.HELP,
                          parse_mode="Markdown")
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -45,6 +49,7 @@ def register(message):
         bot.register_next_step_handler(sent_username,
                                        user_handler)
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -56,6 +61,7 @@ def prediction(message):
         send_prediction = bot.send_message(message.chat.id, games)
         bot.register_next_step_handler(send_prediction, prediction_handler)
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -66,6 +72,7 @@ def results(message):
         send_results = bot.send_message(message.chat.id, texts.RESULTS + games)
         bot.register_next_step_handler(send_results, results_handler)
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -75,6 +82,7 @@ def default(message):
         bot.reply_to(message,
                      "Не понимаю тебя, используй команды из /помоги, если забыл команды.")
     except Exception as e:
+        scripts.send_to_telegram(e)
         bot.reply_to(message,
                      "Ошибочка, сорян")
 
