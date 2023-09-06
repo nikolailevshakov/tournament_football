@@ -4,18 +4,19 @@ import sql
 import texts
 import utils
 import envs
-import scripts.notify_error as scripts
+import channel_posts
 
 bot = telebot.TeleBot(envs.TOKEN)
 
 
 @bot.message_handler(commands=['пинг'])
 def ping(message):
-    print('from_user_id: {id}, username: {username}, chatid: {chat_id}'.format(id=message.from_user.id, username=message.from_user.username, chat_id=message.chat.id))
+    print('from_user_id: {id}, username: {username}, chatid: {chat_id}, first_name: {first_name}'.
+          format(id=message.from_user.id, username=message.from_user.username, chat_id=message.chat.id, first_name=message.from_user.first_name))
     try:
-        bot.reply_to(message, "Чего блять надо?")
+        bot.reply_to(message, "понг")
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -23,10 +24,10 @@ def ping(message):
 def get_meme(message):
     try:
         res = requests.get(" https://meme-api.com/gimme").json()
-        meme = res['ur']
+        meme = res['url']
         bot.reply_to(message, meme)
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -36,7 +37,7 @@ def help(message):
         bot.send_message(message.chat.id, texts.HELP,
                          parse_mode="Markdown")
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -49,7 +50,7 @@ def register(message):
         bot.register_next_step_handler(sent_username,
                                        user_handler)
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -61,7 +62,7 @@ def prediction(message):
         send_prediction = bot.send_message(message.chat.id, games)
         bot.register_next_step_handler(send_prediction, prediction_handler)
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -72,7 +73,7 @@ def results(message):
         send_results = bot.send_message(message.chat.id, texts.RESULTS + games)
         bot.register_next_step_handler(send_results, results_handler)
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message, "Ошибочка, сорян")
 
 
@@ -82,17 +83,17 @@ def default(message):
         bot.reply_to(message,
                      "Не понимаю тебя, используй команды из /помоги, если забыл команды.")
     except Exception as e:
-        scripts.send_to_telegram(e)
+        channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message,
                      "Ошибочка, сорян")
 
 
-def results_handler(message: str):
+def results_handler(message):
     sql.insert_prediction(message.text, "7")
     bot.send_message(message.chat.id, "Готово!")
 
 
-def user_handler(message: str):
+def user_handler(message):
     res = message.text.split()
     if len(res) != 2:
         sent_again = bot.send_message(
@@ -114,23 +115,14 @@ def user_handler(message: str):
                              ERROR_TEXT,
                              parse_mode="Markdown")
         else:
-            sql.insert_user(username, secret)
-            text = "Поздравляю, {username} Ты зарегистрирован. " \
-                   "Твоя секретная фраза: {secret}".format(username=username, secret=secret)
+            sql.insert_user(username, message.chat.id)
+            text = "Поздравляю, {username} Ты зарегистрирован. ".format(username=username)
             bot.send_message(
                 message.chat.id, text, parse_mode="Markdown")
 
 
-def prediction_handler(message: str):
-    res = message.text.split(',')
-    print('id={id}, from_user_id: {from_user_id}, username: {username}'.format(id=message.id, from_user_id=message.from_user.id, username=message.from_user.username))
-    if len(res) != 2:
-        bot.send_message(
-            message.chat.id, 'Ну все же, блять, написано.'
-                             ' Пишем через ЗАПЯТУЮ! Заново - /прогноз', parse_mode="Markdown")
-        return
-    secret = res[0]
-    prediction = res[1].split()
+def prediction_handler(message):
+    prediction = message.text.split()
     if len(prediction) != 10:
         bot.send_message(
             message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь? '
@@ -138,13 +130,9 @@ def prediction_handler(message: str):
         return
     else:
         try:
-            username, user_id = sql.get_userid(secret)
+            username, user_id = sql.get_userid(message.chat.id)
         except IndexError as e:
-            bot.send_message(
-                message.chat.id, 'Секрет свой забыл? Ну ты блять и гений. '
-                                 'Админу пиши. Или начинай сначала - /прогноз.',
-                parse_mode="Markdown")
-            return
+            channel_posts.notify_admin(e, message.from_user.username)
         sql.insert_prediction(" ".join(prediction), user_id)
 
         text = "{username}, твой прогноз принят.".format(username=username)

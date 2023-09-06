@@ -51,7 +51,7 @@ def number_users(database=db) -> int:
 def get_userid(secret, database=db) -> (str, str):
     connection = connect_database(database)
     cursor = connection.cursor()
-    cursor.execute(queries.GET_USERNAME_USERID.format(secret=secret))
+    cursor.execute(queries.GET_USERNAME_USERID.format(telegram_user_id=telegram_user_id))
     res = cursor.fetchall()
     username, user_id = res[0][0], res[0][1]
     disconnect_database(connection)
@@ -129,3 +129,30 @@ def clear_current_week(database=db) -> None:
     cursor = connection.cursor()
     cursor.execute(queries.CLEAR_WEEK_TABLE)
     disconnect_database(connection)
+
+
+def number_preds(database=db) -> int:
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.NUMBER_PREDS)
+    num_preds = cursor.fetchall()[0]
+    disconnect_database(connection)
+    return int(num_preds[0])
+
+
+def check_user_pred_exists(telegram_user_id: str, database=db) -> bool:
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.USER_PRED.format(user_id=telegram_user_id))
+    user_pred = cursor.fetchall()
+    disconnect_database(connection)
+    return bool(user_pred)
+
+
+def get_telegram_chat_ids(database=db) -> [str]:
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.TELEGRAM_IDS)
+    telegram_ids = cursor.fetchall()
+    disconnect_database(connection)
+    return [telegram_user_id[0] for telegram_user_id in telegram_ids]
