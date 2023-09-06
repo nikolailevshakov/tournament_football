@@ -2,7 +2,6 @@ import envs
 import requests
 import utils
 import sql
-import results
 
 
 #post_with_header("Четвертая неделя!", utils.read_games())
