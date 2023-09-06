@@ -6,6 +6,7 @@ variables:
   LOCAL_IMAGE: bot
   DOCKER_DRIVER: overlay2
   LINUX_USER: ubuntu
+  TEXT: "Deploy status: $STATUS%0A%0AProject:+$CI_PROJECT_NAME%0AURL:+$CI_PROJECT_URL/pipelines/$CI_PIPELINE_ID/%0ABranch:+$CI_COMMIT_REF_SLUG%0AUser:+$GITLAB_USER_NAME"
 
 
 stages:         
@@ -15,12 +16,10 @@ stages:
   - deploy
   - notify
 
-.notify_success: &notify_success
-  - curl -s --max-time 10 -d "chat_id=$CHAT_ID&disable_web_page_preview=1&text=success message ✅"
-    https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage > /dev/nul
-
-.notify_error: &notify_error
-  - curl -s --max-time 10 -d "chat_id=$CHAT_ID&disable_web_page_preview=1&text=fail message ❌"
+.notify_status: &notify_status
+  - apk add curl
+  - curl -s --max-time 10
+    -d "chat_id=$CHAT_ID&disable_web_page_preview=1&text=$TEXT"
     https://api.telegram.org/bot$TELEGRAM_BOT_TOKEN/sendMessage > /dev/nul
 
 unit_tests:   
@@ -71,6 +70,8 @@ deploy:
     - chmod 400 "$SSH_KEY"
     - ssh-add "$SSH_KEY"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+  variables:
+    STATUS: "✅"
   script:
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "cd bot; git pull https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sample9832632/bot.git"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker pull $CI_REGISTRY_IMAGE:latest"
@@ -78,12 +79,14 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml pull"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml up -d server"
   after_script:
-    - *notify_success
+    - *notify_status
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
 notify_error:
   stage: notify
+  variables:
+    STATUS: "❌"
   script:
-    - *notify_error
+    - *notify_status
   when: on_failure
