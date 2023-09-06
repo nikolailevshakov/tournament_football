@@ -10,6 +10,7 @@ bot = telebot.TeleBot(envs.TOKEN)
 
 @bot.message_handler(commands=['пинг'])
 def ping(message):
+    print('from_user_id: {id}, username: {username}, chatid: {chat_id}'.format(id=message.from_user.id, username=message.from_user.username, chat_id=message.chat.id))
     try:
         bot.reply_to(message, "Чего блять надо?")
     except Exception as e:
@@ -49,7 +50,6 @@ def register(message):
 
 @bot.message_handler(commands=['прогноз'])
 def prediction(message):
-    print('from_user_id: {id}, username: {username}'.format(id=message.from_user.id, username=message.from_user.username))
     games = utils.read_games()
     try:
         bot.send_message(message.chat.id, texts.PREDICTION)
