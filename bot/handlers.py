@@ -133,7 +133,7 @@ def prediction_handler(message):
             username, user_id = sql.get_userid(message.chat.id)
         except IndexError as e:
             channel_posts.notify_admin(e, message.from_user.username)
-        sql.insert_prediction(" ".join(prediction), user_id)
 
+        sql.insert_prediction(" ".join(prediction), user_id)
         text = "{username}, твой прогноз принят.".format(username=username)
         bot.send_message(message.chat.id, text)
