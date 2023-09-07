@@ -10,9 +10,9 @@ variables:
 stages:         
   - test
   - build
+  - notify
   - scanning
   - deploy
-  - notify
 
 unit_tests:   
   stage: test
@@ -40,9 +40,16 @@ build:
   script:
     - cd ./bot
     - docker build -t $CI_REGISTRY_USER/$DOCKER_HUB_TAG .
-    - docker run -d $CI_REGISTRY_USER/$DOCKER_HUB_TAG
-    - docker logs $CI_REGISTRY_USER/$DOCKER_HUB_TAG
+    - docker run -d $CI_REGISTRY_USER/$DOCKER_HUB_TAG bot
+    - docker logs bot
     - docker push $CI_REGISTRY_IMAGE:latest
+
+notify_error:
+  stage: notify
+  script:
+    - apk add curl
+    - sh ./bot/scripts/notify.sh "Failed build ❌"
+  when: on_failure
 
 container_scanning:
   stage: scanning
@@ -65,6 +72,7 @@ deploy:
     - ssh-add "$SSH_KEY"
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
   script:
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "docker rmi -f $CI_REGISTRY_USER/$DOCKER_HUB_TAG"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "cd bot; git pull https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sample9832632/bot.git"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker pull $CI_REGISTRY_IMAGE:latest"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "echo TELEGRAM_TOKEN=${TELEGRAM_TOKEN} > bot/bot/.env"
@@ -74,10 +82,3 @@ deploy:
     - sh ./bot/scripts/notify.sh "Success ✅"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
-
-notify_error:
-  stage: notify
-  script:
-    - apk add curl
-    - sh ./bot/scripts/notify.sh "Failed ❌"
-  when: on_failure

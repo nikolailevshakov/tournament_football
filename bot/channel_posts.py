@@ -50,7 +50,7 @@ def post_results():
         data.update({item[1]: {"prediction": item[0].split()}})
     for username, value in data.items():
         data[username]["current_points"] = results.calc_points(data[username]["prediction"],
-                                                       data["results"]["prediction"])
+                                                               data["results"]["prediction"])
     # get total points for users
     current_points = sql.get_points()
     for item in current_points:
