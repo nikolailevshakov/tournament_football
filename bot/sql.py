@@ -48,7 +48,7 @@ def number_users(database=db) -> int:
     return int(num_users[0])
 
 
-def get_userid(secret, database=db) -> (str, str):
+def get_userid(telegram_user_id, database=db) -> (str, str):
     connection = connect_database(database)
     cursor = connection.cursor()
     cursor.execute(queries.GET_USERNAME_USERID.format(telegram_user_id=telegram_user_id))
@@ -156,3 +156,12 @@ def get_telegram_chat_ids(database=db) -> [str]:
     telegram_ids = cursor.fetchall()
     disconnect_database(connection)
     return [telegram_user_id[0] for telegram_user_id in telegram_ids]
+
+
+def get_points(database=db):
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.GET_POINTS)
+    points = cursor.fetchall()
+    disconnect_database(connection)
+    return points

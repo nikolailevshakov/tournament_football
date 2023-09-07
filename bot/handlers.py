@@ -56,6 +56,9 @@ def register(message):
 
 @bot.message_handler(commands=['прогноз'])
 def prediction(message):
+    if utils.if_games_empty():
+        bot.reply_to(message, "Игр нет, какой прогноз собрался оставить, фраерок?")
+        return
     games = utils.read_games()
     try:
         bot.send_message(message.chat.id, texts.PREDICTION)
@@ -68,7 +71,7 @@ def prediction(message):
 
 @bot.message_handler(commands=['результаты'])
 def results(message):
-    if message.chat.id != '212288934':
+    if message.chat.id != 212288934:
         bot.reply_to(message, "Ну и куда полез. Тебе нельзя пользоваться этой командой.")
         return
     games = utils.read_games()
@@ -92,6 +95,12 @@ def default(message):
 
 
 def results_handler(message):
+    results = message.text.split()
+    if len(results) != 10:
+        bot.send_message(
+            message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь? '
+                             'Давай заново - /результаты', parse_mode="Markdown")
+        return
     sql.insert_prediction(message.text, "7")
     bot.send_message(message.chat.id, "Готово!")
 
@@ -106,7 +115,6 @@ def user_handler(message):
         bot.register_next_step_handler(sent_again, user_handler)
     else:
         username = res[0]
-        secret = res[1]
         if sql.get_users() is not None and username in sql.get_users():
             sent_again = bot.send_message(
                 message.chat.id, 'Такой юзернейм уже занят! Хреновая у вас фантазия. Выбирай другой!',

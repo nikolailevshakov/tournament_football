@@ -69,7 +69,7 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml pull"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml up -d"
   after_script:
-    - sh ./bot/scripts/notify.sh "✅"
+    - sh ./bot/scripts/notify.sh "Success ✅"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
 
@@ -77,5 +77,5 @@ notify_error:
   stage: notify
   script:
     - apk add curl
-    - sh ./bot/scripts/notify.sh "❌"
+    - sh ./bot/scripts/notify.sh "Failed ❌"
   when: on_failure
