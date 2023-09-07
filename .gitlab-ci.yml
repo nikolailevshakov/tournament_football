@@ -40,6 +40,7 @@ build:
   script:
     - cd ./bot
     - docker build -t $CI_REGISTRY_USER/$DOCKER_HUB_TAG .
+    - docker run $CI_REGISTRY_USER/$DOCKER_HUB_TAG -d
     - docker push $CI_REGISTRY_IMAGE:latest
 
 container_scanning:
