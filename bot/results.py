@@ -1,6 +1,7 @@
 
 
-def calc_points(game_preds: list[str], results: list[str]) -> int:
+# def calc_points(game_preds: list[str], results: list[str]) -> int:
+def calc_points(game_preds, results) -> int:
     points = 0
     for i in range(len(game_preds)):
         if results[i] == '':
