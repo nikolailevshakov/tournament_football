@@ -94,18 +94,6 @@ def default(message):
                      "Ошибочка, сорян")
 
 
-@bot.message_handler(commands=['гпт'])
-def gpt(message):
-    url = "https://api.openai.com/v1/chat/completions"
-    headers = {"Content-Type": "application/json; charset=utf-8",
-               "Authorization": f"Bearer {envs.GPT_TOKEN}"}
-    body = {'model': "gpt-3.5-turbo",
-          'messages': [{"role": "user", "content": message.text}]
-           }
-    response = requests.post(url, headers=headers, json=body).json()
-    print(response)
-    bot.reply_to(message, response)
-
 def results_handler(message):
     results = message.text.split()
     if len(results) != 10:
