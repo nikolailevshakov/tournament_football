@@ -16,6 +16,20 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
+ALTER TABLE ONLY public.current_week DROP CONSTRAINT fk_users_id;
+ALTER TABLE ONLY public.season DROP CONSTRAINT fk_users_id;
+ALTER TABLE ONLY public.users DROP CONSTRAINT users_pkey;
+ALTER TABLE ONLY public.season DROP CONSTRAINT season_pkey;
+ALTER TABLE ONLY public.current_week DROP CONSTRAINT current_week_pkey;
+ALTER TABLE public.users ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.season ALTER COLUMN id DROP DEFAULT;
+ALTER TABLE public.current_week ALTER COLUMN id DROP DEFAULT;
+DROP SEQUENCE public.users_id_seq;
+DROP TABLE public.users;
+DROP SEQUENCE public.season_id_seq;
+DROP TABLE public.season;
+DROP SEQUENCE public.current_week_id_seq;
+DROP TABLE public.current_week;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;

@@ -68,6 +68,9 @@ def prediction(message):
 
 @bot.message_handler(commands=['результаты'])
 def results(message):
+    if message.chat.id != '212288934':
+        bot.reply_to(message, "Ну и куда полез. Тебе нельзя пользоваться этой командой.")
+        return
     games = utils.read_games()
     try:
         send_results = bot.send_message(message.chat.id, texts.RESULTS + games)
