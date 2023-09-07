@@ -10,9 +10,9 @@ variables:
 stages:         
   - test
   - build
-  - notify
   - scanning
   - deploy
+  - notify
 
 unit_tests:   
   stage: test
@@ -22,7 +22,7 @@ unit_tests:
     - pip install pytest
     - pytest   
 
-code_style:   
+code_style:
   stage: test
   before_script:
     - pip install pycodestyle    
@@ -40,16 +40,7 @@ build:
   script:
     - cd ./bot
     - docker build -t $CI_REGISTRY_USER/$DOCKER_HUB_TAG .
-    - docker run -d $CI_REGISTRY_USER/$DOCKER_HUB_TAG bot
-    - docker logs bot
     - docker push $CI_REGISTRY_IMAGE:latest
-
-notify_error:
-  stage: notify
-  script:
-    - apk add curl
-    - sh ./bot/scripts/notify.sh "Failed build ❌"
-  when: on_failure
 
 container_scanning:
   stage: scanning
@@ -82,3 +73,11 @@ deploy:
     - sh ./bot/scripts/notify.sh "Success ✅"
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
+
+notify_error:
+  image: alpine:latest
+  stage: notify
+  script:
+    - apk add curl
+    - sh ./bot/scripts/notify.sh "Failed ❌"
+  when: on_failure
