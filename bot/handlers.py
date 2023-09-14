@@ -134,9 +134,11 @@ def user_handler(message):
 
 def prediction_handler(message):
     prediction = message.text.split()
+    print(prediction)
     if len(prediction) != 10:
         bot.send_message(
-            message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь? '
+            message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь?'
+                             ' И про секретную фразу забудь! Пиши только прогноз. '
                              'Давай заново - /прогноз',  parse_mode="Markdown")
         return
     else:
