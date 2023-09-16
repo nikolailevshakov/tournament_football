@@ -4,6 +4,7 @@ RUN mkdir /bot
 ADD . /bot
 WORKDIR /bot
 RUN pip3 install -r requirements.txt
+chmod +x ./scripts/start.sh
 EXPOSE 80
 
-CMD ["python", "main.py"]
+CMD ["./scripts/start.sh"]
