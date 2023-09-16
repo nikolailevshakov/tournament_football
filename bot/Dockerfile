@@ -7,4 +7,4 @@ RUN pip3 install -r requirements.txt
 RUN chmod +x ./scripts/start.sh
 EXPOSE 80
 
-CMD ["./scripts/start.sh"]
+CMD ["sh", "-c","./scripts/start.sh"]
