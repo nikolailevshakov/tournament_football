@@ -2,5 +2,4 @@ telebot==0.0.5
 psycopg2-binary
 requests==2.25.1
 python-dotenv
-schedule
 translate
