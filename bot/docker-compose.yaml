@@ -15,7 +15,7 @@ services:
       - database
     container_name: bot
   database:
-    image: postgres
+    image: postgres:15.4
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
