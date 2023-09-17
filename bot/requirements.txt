@@ -3,3 +3,4 @@ psycopg2-binary
 requests==2.25.1
 python-dotenv
 schedule
+translate

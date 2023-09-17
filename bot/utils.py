@@ -1,5 +1,7 @@
 import codecs
 import os
+from translate import Translator
+import requests
 
 
 def read_games():
@@ -14,3 +16,10 @@ def clear_games():
 
 def if_games_empty():
     return os.path.getsize("./files/games.txt") == 0
+
+
+def talk_response():
+    api_url = "https://evilinsult.com/generate_insult.php?lang=en&type=json"
+    insult = requests.get(api_url).json()["insult"]
+    translator = Translator(to_lang="ru")
+    return translator.translate(insult)

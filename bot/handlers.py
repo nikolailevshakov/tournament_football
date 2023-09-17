@@ -83,6 +83,16 @@ def results(message):
         bot.reply_to(message, "Ошибочка, сорян")
 
 
+@bot.message_handler(commands=['поговорить'])
+def talk(message):
+    try:
+        bot.send_message(message.chat.id, utils.talk_response(),
+                         parse_mode="Markdown")
+    except Exception as e:
+        channel_posts.notify_admin(e, message.from_user.username)
+        bot.reply_to(message, "Ошибочка, сорян")
+
+
 @bot.message_handler()
 def default(message):
     try:
