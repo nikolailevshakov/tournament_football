@@ -3,6 +3,8 @@ import requests
 import utils
 import sql
 import results
+import sys
+sys.stdout.reconfigure(encoding='utf-8')
 
 
 # post_with_header("Четвертая неделя!", utils.read_games())
@@ -45,20 +47,23 @@ def notify_admin(message, username):
 
 
 def post_results():
+    week_points = {}
+    total_points = {}
     data = {}
     for item in sql.get_predictions():
         data.update({item[1]: {"prediction": item[0].split()}})
-    for username, value in data.items():
-        data[username]["current_points"] = results.calc_points(data[username]["prediction"],
-                                                               data["results"]["prediction"])
-    # get total points for users
-    current_points = sql.get_points()
-    for item in current_points:
-        data[item[0]]['week_points'] = item[1]
-        data[item[0]]['total_points'] = data[item[0]]['week_points'] + data[item[0]]["current_points"]
-    post_text = "Участник || Неделя || Сезон \n"
     for username in data.keys():
-        text_line = f'{username} || {data.username.week_points} || {data.username.total_points} \n'
-        post_text += text_line
+        week_points[username]= results.calc_points(data[username]["prediction"],
+                                                               data["results"]["prediction"])
+    previous_points = sql.get_points()
+
+    for item in previous_points:
+        total_points[item[0]] = week_points[item[0]] + item[1]
+    post_text = "Участник || Неделя || Сезон \n"
+    print(data)
+    for username in data.keys():
+        if username != "results":
+            text_line = f'{username} || {week_points[username]} || {total_points[username]} \n'
+            post_text += text_line
     post_with_header("Результаты недели!", post_text)
     return
