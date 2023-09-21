@@ -60,7 +60,6 @@ def post_results():
     for item in previous_points:
         total_points[item[0]] = week_points[item[0]] + item[1]
     post_text = "Участник || Неделя || Сезон \n"
-    print(data)
     for username in data.keys():
         if username != "results":
             text_line = f'{username} || {week_points[username]} || {total_points[username]} \n'
