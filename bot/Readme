@@ -8,3 +8,9 @@ Schedule:
 - By 18.00 Wednesday add new games at file/games.txt file (MANUAL) +
 - By 22.00 Wednesday send new games post post_with_header.py + # 0 20 * * WED python wednesday_20_post_games.py
 - Friday at 23.00 - notify if someone forgot to send prediction check_if_prediction_exists (games file shouldn't be empty) + # 0 20 * * FRI python friday_20_notify_users.py
+
+0 20 * * MON sudo docker exec bot python cron_jobs.py monday
+0 20 * * TUE sudo docker exec bot python cron_jobs.py tuesday
+0 20 * * WED sudo docker exec bot python cron_jobs.py wednesday
+0 20 * * FRI sudo docker exec bot python cron_jobs.py friday
+

@@ -37,7 +37,8 @@ GET_RESULTS = "SELECT current_week.prediction FROM current_week " \
 NUMBER_PREDS = "SELECT COUNT(*) FROM current_week"
 
 USER_PRED = "SELECT current_week.prediction FROM current_week " \
-            "WHERE current_week.user_id={user_id}"
+            "INNER JOIN users ON users.id = current_week.user_id " \
+            "WHERE users.telegram_user_id = '{user_id}'"
 
 TELEGRAM_IDS = "SELECT telegram_user_id FROM users " \
                "WHERE id != 7"
