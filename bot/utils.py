@@ -31,4 +31,4 @@ def organize_results(all_texts):
     for line in all_texts:
         df.loc[len(df)] = line
     df.sort_values(by=["Сезон", "Неделя"], ascending=False, inplace=True)
-    return df.to_markdown()
+    return df
