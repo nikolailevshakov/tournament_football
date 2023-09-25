@@ -165,3 +165,11 @@ def get_points(database=db):
     points = cursor.fetchall()
     disconnect_database(connection)
     return points
+
+
+def update_points(username: str, total_points: int, database=db):
+    connection = connect_database(database)
+    cursor = connection.cursor()
+    cursor.execute(queries.UPDATE_POINTS.format(username=username, points=total_points))
+    disconnect_database(connection)
+    return

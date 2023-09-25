@@ -2,6 +2,7 @@ import codecs
 import os
 from translate import Translator
 import requests
+import pandas as pd
 
 
 def read_games():
@@ -23,3 +24,11 @@ def talk_response():
     insult = requests.get(api_url).json()["insult"]
     translator = Translator(to_lang="ru")
     return translator.translate(insult)
+
+
+def organize_results(all_texts):
+    df = pd.DataFrame(columns=["Участник", "Неделя", "Сезон"])
+    for line in all_texts:
+        df.loc[len(df)] = line
+    df.sort_values(by=["Сезон", "Неделя"], ascending=False, inplace=True)
+    return df.to_markdown()

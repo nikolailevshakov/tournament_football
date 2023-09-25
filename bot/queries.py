@@ -45,3 +45,6 @@ TELEGRAM_IDS = "SELECT telegram_user_id FROM users " \
 
 GET_POINTS = "SELECT users.username, season.points FROM season " \
              "INNER JOIN users ON users.id = season.user_id"
+
+UPDATE_POINTS = "UPDATE season SET points={points} " \
+                "WHERE season.user_id = (SELECT id FROM users WHERE username='{username}')"

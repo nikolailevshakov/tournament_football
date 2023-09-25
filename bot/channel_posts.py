@@ -4,6 +4,7 @@ import utils
 import sql
 import results
 import sys
+import chatgpt
 sys.stdout.reconfigure(encoding='utf-8')
 
 
@@ -59,10 +60,13 @@ def post_results():
 
     for item in previous_points:
         total_points[item[0]] = week_points[item[0]] + item[1]
-    post_text = "Участник || Неделя || Сезон \n"
+    all_texts = []
     for username in data.keys():
         if username != "results":
-            text_line = f'{username} || {week_points[username]} || {total_points[username]} \n'
-            post_text += text_line
+            text_line = [username, week_points[username], total_points[username]]
+            all_texts.append(text_line)
+            sql.update_points(username, total_points[username])
+    table = utils.organize_results(all_texts)
+    post_text = table + chatgpt.ask("Интересный фубольный факт: ")
     post_with_header("Результаты недели!", post_text)
     return
