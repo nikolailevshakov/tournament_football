@@ -4,5 +4,3 @@ requests==2.25.1
 python-dotenv
 translate
 Cmake
-pandas
-tabulate
