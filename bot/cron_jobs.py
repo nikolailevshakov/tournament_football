@@ -11,5 +11,3 @@ elif sys.argv[1] == "wednesday":
     channel_posts.post_with_header("Игры этой недели!", utils.read_games())
 elif sys.argv[1] == "friday":
     channel_posts.check_if_prediction_exists()
-elif sys.argv[1] == "test":
-    channel_posts.notify_admin("Тест прошел успешно", "админ")
