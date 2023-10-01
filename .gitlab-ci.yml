@@ -67,7 +67,7 @@ deploy:
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "cd bot; git pull https://${GIT_USERNAME}:${GIT_PASSWORD}@gitlab.com/sample9832632/bot.git"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker pull $CI_REGISTRY_IMAGE:latest"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "echo TELEGRAM_TOKEN=${TELEGRAM_TOKEN} > bot/bot/.env"
-    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "echo OPENAI_API_KEY=${OPENAI_API_KEY} > bot/bot/.env"
+    - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "echo OPENAI_API_KEY=${OPENAI_API_KEY} >> bot/bot/.env"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml pull"
     - ssh -o StrictHostKeyChecking=no $LINUX_USER@$SERVER_IP "sudo docker compose -f bot/bot/docker-compose.yaml up -d"
 #  after_script:
