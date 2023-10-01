@@ -2,7 +2,7 @@ import codecs
 import os
 from translate import Translator
 import requests
-import pandas as pd
+from tabulate import tabulate
 
 
 def read_games():
@@ -28,9 +28,6 @@ def talk_response():
 
 
 def organize_results(all_texts):
-    df = pd.DataFrame(columns=["Участник", "Неделя", "Сезон"])
-    for line in all_texts:
-        df.loc[len(df)] = line
-    df.sort_values(by=["Сезон", "Неделя"], ascending=False, inplace=True)
-    print(df.to_markdown())
-    return df.to_markdown()
+    df = tabulate(all_texts, headers=["Участник", "Неделя", "Сезон"], tablefmt="fancy_outline")
+    print(df)
+    return df

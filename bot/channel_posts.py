@@ -54,7 +54,7 @@ def post_results():
     for item in sql.get_predictions():
         data.update({item[1]: {"prediction": item[0].split()}})
     for username in data.keys():
-        week_points[username]= results.calc_points(data[username]["prediction"],
+        week_points[username] = results.calc_points(data[username]["prediction"],
                                                                data["results"]["prediction"])
     previous_points = sql.get_points()
 
@@ -68,6 +68,6 @@ def post_results():
             sql.update_points(username, total_points[username])
     table = utils.organize_results(all_texts)
     post_text = table + "\n\nФутбольный факт: " + chatgpt.ask("Скажи интересный фубольный факт") + "🙅‍♂️⚽"
-    print(post_text)
+    # print(post_text)
     post_with_header("🌟📊Результаты недели!📊🌟", post_text)
     return
