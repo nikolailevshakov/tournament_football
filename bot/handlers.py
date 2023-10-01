@@ -5,6 +5,7 @@ import texts
 import utils
 import envs
 import channel_posts
+import chatgpt
 
 bot = telebot.TeleBot(envs.TOKEN)
 
@@ -96,8 +97,7 @@ def talk(message):
 @bot.message_handler()
 def default(message):
     try:
-        bot.reply_to(message,
-                     "Не понимаю тебя, используй команды из /помоги, если забыл команды.")
+        bot.send_message(message.chat.id, chatgpt.ask(message.text) + "\n\n" + texts.WHAT_DO, parse_mode="Markdown")
     except Exception as e:
         channel_posts.notify_admin(e, message.from_user.username)
         bot.reply_to(message,

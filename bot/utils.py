@@ -8,6 +8,7 @@ import pandas as pd
 def read_games():
     file = codecs.open("./files/games.txt", "r", "utf-8-sig")
     lines = file.readlines()
+    lines = [line.replace('-', '🆚') for line in lines]
     return "".join(lines)
 
 
@@ -31,4 +32,5 @@ def organize_results(all_texts):
     for line in all_texts:
         df.loc[len(df)] = line
     df.sort_values(by=["Сезон", "Неделя"], ascending=False, inplace=True)
+    print(df.to_markdown())
     return df.to_markdown()

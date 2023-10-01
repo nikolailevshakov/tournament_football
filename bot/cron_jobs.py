@@ -8,6 +8,6 @@ if sys.argv[1] == "monday":
 elif sys.argv[1] == "tuesday":
     jobs.clear_current_week()
 elif sys.argv[1] == "wednesday":
-    channel_posts.post_with_header("Игры этой недели!", utils.read_games())
+    channel_posts.post_with_header("🎮⚽Игры этой недели!⚽🎮\n", utils.read_games())
 elif sys.argv[1] == "friday":
     channel_posts.check_if_prediction_exists()

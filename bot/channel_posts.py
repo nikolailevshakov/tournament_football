@@ -14,7 +14,7 @@ def post_with_header(header, message):
     api_url = f'https://api.telegram.org/bot{envs.TOKEN}/sendMessage'
 
     try:
-        requests.post(api_url, json={'chat_id': chat_id, 'text': f'{header}\n{message}'})
+        requests.post(api_url, json={'chat_id': chat_id, 'text': f'{header}\n\n{message}'})
     except Exception as e:
         print(e)
 
@@ -67,6 +67,7 @@ def post_results():
             all_texts.append(text_line)
             sql.update_points(username, total_points[username])
     table = utils.organize_results(all_texts)
-    post_text = table + chatgpt.ask("Интересный фубольный факт: ")
-    post_with_header("Результаты недели!", post_text)
+    post_text = table + "\n\nФутбольный факт: " + chatgpt.ask("Скажи интересный фубольный факт") + "🙅‍♂️⚽"
+    print(post_text)
+    post_with_header("🌟📊Результаты недели!📊🌟", post_text)
     return
