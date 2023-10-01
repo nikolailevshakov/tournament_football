@@ -2,8 +2,8 @@ create a dump - pg_dump -c postgres://postgres@localhost:5432/tournament > pg_du
 restore database - cat your_dump.sql | docker exec -i your-db-container psql -U postgres -d tournament
 
 Schedule:
-- Monday By 20.00 - add games results with /результаты command (MANUAL) +
-- Monday at 22.00 - update sql table and post results post_results() CHECK IF WORKING CORRECTLY # 0 20 * * MON python monday_20_post_results.py
+- Monday By 12.00 - add games results with /результаты command (MANUAL) +
+- Monday at 13.00 - update sql table and post results post_results() CHECK IF WORKING CORRECTLY # 0 20 * * MON python monday_20_post_results.py
 - Tuesday at 23.00 - run clear_current_week.py (clear games.txt and current_week table) + # 0 20 * * TUE python tuesday_20_clear_games_current_table.py
 - By 18.00 Wednesday add new games at file/games.txt file (MANUAL) +
 - By 22.00 Wednesday send new games post post_with_header.py + # 0 20 * * WED python wednesday_20_post_games.py
