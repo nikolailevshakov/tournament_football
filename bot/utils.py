@@ -28,6 +28,11 @@ def talk_response():
 
 
 def organize_results(all_texts):
+    all_texts.sort(reverse = True, key=lambda x: x[2])
+    all_texts[0][0] = "🥇" + all_texts[0][0]
+    all_texts[1][0] = "🥈" + all_texts[1][0]
+    all_texts[2][0] = "🥉" + all_texts[2][0]
+    all_texts[3][0] = "😒" + all_texts[3][0]
+    all_texts[4][0] = "🤡" + all_texts[4][0]
     df = tabulate(all_texts, headers=["Участник", "Неделя", "Сезон"], tablefmt="fancy_outline")
-    print(df)
     return df
