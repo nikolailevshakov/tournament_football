@@ -3,6 +3,7 @@ import os
 from translate import Translator
 import requests
 from tabulate import tabulate
+import json
 
 
 def read_games():
@@ -34,5 +35,5 @@ def organize_results(all_texts):
     all_texts[2][0] = "🥉" + all_texts[2][0]
     all_texts[3][0] = "😒" + all_texts[3][0]
     all_texts[4][0] = "🤡" + all_texts[4][0]
-    df = tabulate(all_texts, headers=["Участник", "Неделя", "Сезон"], tablefmt="fancy_outline")
+    df = tabulate(all_texts, headers=["Участник", "Неделя", "Сезон"], tablefmt="github")
     return df

@@ -9,6 +9,8 @@ import chatgpt
 
 bot = telebot.TeleBot(envs.TOKEN)
 
+MENU = ["хочумем", "помоги", "прогноз", "поговорить"]
+
 
 @bot.message_handler(commands=['пинг'])
 def ping(message):
