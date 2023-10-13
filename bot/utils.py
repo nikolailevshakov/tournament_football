@@ -3,7 +3,6 @@ import os
 from translate import Translator
 import requests
 from tabulate import tabulate
-import json
 
 
 def read_games():
