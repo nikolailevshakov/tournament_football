@@ -68,6 +68,12 @@ resource "aws_security_group" "instance" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
+    from_port   = 5000
+    to_port     = 5000
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  ingress {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
@@ -84,7 +90,7 @@ resource "aws_security_group" "instance" {
 
 
 resource "aws_key_pair" "key_pair" {
-  key_name   = "instance-key"
+  key_name   = "instance-key-bot"
   public_key = file("${path.module}/key.pub")
 }
 
