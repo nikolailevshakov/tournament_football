@@ -20,16 +20,3 @@ def calc_points(game_preds, results) -> int:
         else:
             continue
     return points
-
-
-# def output_predictions() -> dict:
-#     query = sql.get_predictions()
-#     result = {}
-#     with codecs.open("files/predictions.txt", "w", "utf-8-sig") as f:
-#         for item in query:
-#             result[item[0]] = item[1]
-#     return result
-#
-#
-# def output_results() -> list[str]:
-#     return sql.get_results().split()

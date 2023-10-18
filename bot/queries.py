@@ -2,7 +2,6 @@ GET_USERS = "SELECT username from users;"
 CREATE_DATABASE = "CREATE DATABASE tournament"
 CREATE_USERS_TABLE = "CREATE TABLE users (id SERIAL PRIMARY KEY, " \
                          "username VARCHAR(255), " \
-                     "secret VARCHAR(255), " \
                      "telegram_user_id VARCHAR(255)," \
                      "created_at TIMESTAMP)"
 CREATE_SEASON_TABLE = "CREATE TABLE season (id SERIAL PRIMARY KEY, " \
