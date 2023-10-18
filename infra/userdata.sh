@@ -2,7 +2,7 @@
 
 
 apt update -y
-
+echo "${token}" > /home/ubuntu/token
 #INSTALL DOCKER
 
 apt-get install ca-certificates curl gnupg
@@ -22,7 +22,8 @@ apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docke
 
 # RUN APPLICATION
 
-git clone https://github.com/nikolailevshakov/tournament_football.git /home/ubuntu/tournament_football
+git clone  https://oauth2:$(cat /home/ubuntu/token)@gitlab.com/sample9832632/bot.git
+rm token
 mkdir /home/ubuntu/db-data
 #cd /home/ubuntu/tournament_football/bot
 #docker compose up -d

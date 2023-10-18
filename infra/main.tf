@@ -106,7 +106,9 @@ resource "aws_instance" "myinstance" {
     volume_size = var.volume_size
   }
 
-  user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {}))
+  user_data_base64 = base64encode(templatefile("${path.module}/userdata.sh", {
+    token = file("${path.module}/token")
+  }))
 
   tags = {
     Name = "Instance"
