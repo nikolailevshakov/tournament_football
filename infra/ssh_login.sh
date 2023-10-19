@@ -1,1 +1,1 @@
-ssh -i key.pem ubuntu@18.193.109.209
+ssh -i key.pem ubuntu@3.126.251.3
