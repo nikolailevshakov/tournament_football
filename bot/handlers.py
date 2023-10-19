@@ -6,6 +6,7 @@ import utils
 import envs
 import channel_posts
 import chatgpt
+import logging
 
 bot = telebot.TeleBot(envs.TOKEN)
 
@@ -62,8 +63,8 @@ def prediction(message):
     if utils.if_games_empty():
         bot.reply_to(message, "Игр нет, какой прогноз собрался оставить, фраерок?")
         return
-    games = utils.read_games()
     try:
+        games = utils.read_games()
         bot.send_message(message.chat.id, texts.PREDICTION)
         send_prediction = bot.send_message(message.chat.id, games)
         bot.register_next_step_handler(send_prediction, prediction_handler)
@@ -145,20 +146,24 @@ def user_handler(message):
 
 
 def prediction_handler(message):
-    prediction = message.text.split()
-    print(prediction)
-    if len(prediction) != 10:
-        bot.send_message(
-            message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь?'
-                             ' И про секретную фразу забудь! Пиши только прогноз. '
-                             'Давай заново - /прогноз',  parse_mode="Markdown")
-        return
-    else:
-        try:
-            username, user_id = sql.get_userid(message.chat.id)
-        except IndexError as e:
-            channel_posts.notify_admin(e, message.from_user.username)
 
-        sql.insert_prediction(" ".join(prediction), user_id)
-        text = "{username}, твой прогноз принят.".format(username=username)
-        bot.send_message(message.chat.id, text)
+    # prediction = message.text.split()
+    # print(prediction)
+    # if len(prediction) != 10:
+    #     bot.send_message(
+    #         message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь?'
+    #                          ' И про секретную фразу забудь! Пиши только прогноз. '
+    #                          'Давай заново - /прогноз',  parse_mode="Markdown")
+    #     return
+    # else:
+    #     try:
+    #         username, user_id = sql.get_userid(message.chat.id)
+    #     except IndexError as e:
+    #         channel_posts.notify_admin(e, message.from_user.username)
+    #
+    #     sql.insert_prediction(" ".join(prediction), user_id)
+    mess = 'username: {username}, chatid: {chat_id}, first_name: {first_name}'.format(username=message.from_user.username, chat_id=message.chat.id,first_name=message.from_user.first_name)
+    logging.basicConfig(filename='example.log', level=logging.DEBUG)
+    logging.debug(mess)
+    text = "{username}, твой прогноз принят.".format(username=message.from_user.username)
+    bot.send_message(message.chat.id, text)

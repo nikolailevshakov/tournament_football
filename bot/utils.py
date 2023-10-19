@@ -36,3 +36,8 @@ def organize_results(all_texts):
     all_texts[4][0] = "🤡" + all_texts[4][0]
     df = tabulate(all_texts, headers=["Участник", "Неделя", "Сезон"], tablefmt="github")
     return df
+
+
+# telegram_user_ids
+# AAA - 475304200
+# kolyalev - 212288934
