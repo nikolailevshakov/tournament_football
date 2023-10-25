@@ -41,3 +41,6 @@ def organize_results(all_texts):
 # telegram_user_ids
 # AAA - 475304200
 # kolyalev - 212288934
+# Tit - 5016952492
+# Ryko - 683204699
+# max - 451170390

@@ -114,7 +114,7 @@ def results_handler(message):
             message.chat.id, 'Ну на 10 игр прогноз надо оставить, считать не умеешь? '
                              'Давай заново - /результаты', parse_mode="Markdown")
         return
-    sql.insert_prediction(message.text, "7")
+    sql.insert_prediction(message.text, "6")
     bot.send_message(message.chat.id, "Готово!")
 
 
@@ -157,12 +157,11 @@ def prediction_handler(message):
         return
     else:
         try:
-            pass
-            #username, user_id = sql.get_userid(message.chat.id)
+            username, user_id = sql.get_userid(message.chat.id)
         except IndexError as e:
             channel_posts.notify_admin(e, message.from_user.username)
 
-        #sql.insert_prediction(" ".join(prediction), user_id)
+        sql.insert_prediction(" ".join(prediction), user_id)
     mess = 'pred: {pred}, username: {username}, chatid: {chat_id}, first_name: {first_name}'.format(pred=prediction, username=message.from_user.username, chat_id=message.chat.id,first_name=message.from_user.first_name)
     logging.basicConfig(filename='example.log', level=logging.DEBUG)
     logging.debug(mess)

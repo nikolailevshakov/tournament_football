@@ -18,6 +18,7 @@ docs/_build/
 .vscode
 token
 key.*
+*.log
 
 .terraform.lock.hcl
 **/.terraform/*
