@@ -3,6 +3,8 @@ import os
 from translate import Translator
 import requests
 from tabulate import tabulate
+import chatgpt
+import random
 
 
 def read_games():
@@ -38,6 +40,18 @@ def organize_results(all_texts):
     return df
 
 
+def interest_fact_team():
+    file = codecs.open("./files/games.txt", "r", "utf-8-sig")
+    lines = file.readlines()
+    lines = [line.split(" - ") for line in lines]
+    new_lines = []
+    for subline in lines:
+        for line in subline:
+            new_lines.append(line.strip())
+    team = new_lines[random.randint(0, len(new_lines))]
+    return "\n\n" + chatgpt.ask("Скажи интересный фубольный факт о футбольной команде " + team) + "⚡⚡⚡"
+
+print(interest_fact_team())
 # telegram_user_ids
 # AAA - 475304200
 # kolyalev - 212288934

@@ -165,5 +165,5 @@ def prediction_handler(message):
     mess = 'pred: {pred}, username: {username}, chatid: {chat_id}, first_name: {first_name}'.format(pred=prediction, username=message.from_user.username, chat_id=message.chat.id,first_name=message.from_user.first_name)
     logging.basicConfig(filename='example.log', level=logging.DEBUG)
     logging.debug(mess)
-    text = "{username}, твой прогноз принят.".format(username=message.from_user.username)
+    text = "{username}, твой прогноз принят.".format(username=username)
     bot.send_message(message.chat.id, text)
