@@ -51,7 +51,6 @@ def interest_fact_team():
     team = new_lines[random.randint(0, len(new_lines))]
     return "\n\n" + chatgpt.ask("Скажи интересный фубольный факт о футбольной команде " + team) + "⚡⚡⚡"
 
-print(interest_fact_team())
 # telegram_user_ids
 # AAA - 475304200
 # kolyalev - 212288934
