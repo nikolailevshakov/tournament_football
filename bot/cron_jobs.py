@@ -1,5 +1,4 @@
 import channel_posts
-import jobs
 import utils
 import sys
 
