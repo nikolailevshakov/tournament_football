@@ -97,6 +97,19 @@ def talk(message):
         bot.reply_to(message, "Ошибочка, сорян")
 
 
+@bot.message_handler(commands=['игры'])
+def talk(message):
+    if message.chat.id != 212288934:
+        bot.reply_to(message, "Ну и куда полез. Тебе нельзя пользоваться этой командой.")
+        return
+    try:
+        send_games = bot.send_message(message.chat.id, texts.GAMES)
+        bot.register_next_step_handler(send_games, games_handler)
+    except Exception as e:
+        channel_posts.notify_admin(e, message.from_user.username)
+        bot.reply_to(message, "Ошибочка, сорян")
+
+
 @bot.message_handler()
 def default(message):
     try:
@@ -116,6 +129,17 @@ def results_handler(message):
         return
     sql.insert_prediction(message.text, "6")
     bot.send_message(message.chat.id, "Готово!")
+
+
+def games_handler(message):
+    try:
+        utils.write_games(message.text)
+    except Exception as e:
+        channel_posts.notify_admin(e, message.from_user.username)
+        bot.reply_to(message,
+                     "Ошибочка, сорян")
+    finally:
+        bot.send_message(message.chat.id, "Готово!")
 
 
 def user_handler(message):

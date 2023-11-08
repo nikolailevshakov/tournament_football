@@ -5,6 +5,7 @@ import requests
 from tabulate import tabulate
 import chatgpt
 import random
+import sql
 
 
 def read_games():
@@ -12,6 +13,13 @@ def read_games():
     lines = file.readlines()
     lines = [line.replace('-', '🆚') for line in lines]
     return "".join(lines)
+
+
+def write_games(games: str):
+    sql.clear_current_week()
+    clear_games()
+    with codecs.open("./files/games.txt", "w", "utf-8-sig") as file:
+        file.write(u"{games}".format(games=games))
 
 
 def clear_games():
