@@ -6,13 +6,58 @@ variables:
   LOCAL_IMAGE: bot
   DOCKER_DRIVER: overlay2
   LINUX_USER: ubuntu
+  PLAN: plan.cache
+  PLAN_JSON: plan.json
+  TF_ROOT: infra
 
-stages:         
+stages:
+  - infra
   - test
   - build
   - scanning
   - deploy
   - notify
+
+.terraform_init:
+  - export AWS_ACCESS_KEY=${AWS_ACCESS_KEY_ID}
+  - export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+  - cd $TF_ROOT
+  - terraform --version
+  - terraform init
+
+plan:
+  stage: infra
+  image: hashicorp/terraform
+  before_script:
+    - apk --no-cache add jq
+    - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
+    - terraform_init
+  script:
+    - terraform plan -out=$PLAN
+    - terraform show --json $PLAN | convert_report
+  artifacts:
+    reports:
+      terraform: $PLAN_JSON
+
+update:
+  stage: infra
+  image: hashicorp/terraform
+  before_script:
+    - terraform_init
+  script:
+    - terraform apply -input=false
+  when: manual
+
+
+recreate:
+  stage: infra
+  image: hashicorp/terraform
+  before_script:
+    - terraform_init
+  script:
+    - terraform destroy -input=false
+    - terraform apply -input=false
+  when: manual
 
 unit_tests:   
   stage: test
